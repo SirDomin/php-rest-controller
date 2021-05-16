@@ -1,0 +1,15 @@
+routes:
+    default:
+        url: /
+        controller: App\Controller\DefaultController
+        methods: [GET, POST]
+
+    index-id:
+        url: /index/{id}/xd/{test}
+        controller: App\Controller\IndexIdController
+        methods: [GET]
+
+    database:
+        url: /database
+        controller: App\Controller\DatabaseController
+        methods: [GET, POST]
