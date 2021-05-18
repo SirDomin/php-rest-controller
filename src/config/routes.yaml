@@ -3,13 +3,40 @@ routes:
         url: /
         controller: App\Controller\DefaultController
         methods: [GET, POST]
+        allow: [user, admin]
 
     index-id:
         url: /index/{id}/xd/{test}
         controller: App\Controller\IndexIdController
         methods: [GET]
+        allow: []
 
     database:
         url: /database
         controller: App\Controller\DatabaseController
         methods: [GET, POST]
+        allow: [admin]
+
+    login:
+        url: /login
+        controller: App\Controller\LoginController
+        methods: [POST]
+        allow: [guest, user]
+
+    register:
+        url: /register
+        controller: App\Controller\RegisterController
+        methods: [POST]
+        allow: [guest]
+
+    promote_user_to_admin:
+        url: /users/{id}/promote
+        controller: App\Controller\PromoteController
+        methods: [ GET ]
+        allow: [ admin ]
+
+    test:
+        url: /test
+        controller: App\Controller\TestController
+        methods: [ GET ]
+        allow: [ admin ]

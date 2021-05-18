@@ -9,11 +9,17 @@ use \ReflectionClass;
 
 class DatabaseController implements ControllerInterface {
 
-    private $cacheFile = 'orm_cache.txt';
+    private string $cacheFile = 'orm_cache.txt';
 
-    private $databaseRepository;
+    private DatabaseRepository $databaseRepository;
 
     private $cache = [];
+
+    private array $mapping = [
+        'string' => 'varchar(255)',
+        'DateTime' => 'DATETIME',
+        'int' => 'int',
+    ];
 
     function __construct(DatabaseRepository $databaseRepository)
     {
@@ -22,7 +28,6 @@ class DatabaseController implements ControllerInterface {
     }
 
     function init(): Response {
-
         $entityList = $this->map();
 
         $entityClasses = $this->mergeCache($entityList);
@@ -49,7 +54,18 @@ class DatabaseController implements ControllerInterface {
         foreach($classes as $className) {
             $reflect = new ReflectionClass($className);
             if($reflect->implementsInterface(EntityInterface::class)) {
-                $entityList[strtolower(str_replace('App\\Entity\\', '', $className))] = get_object_vars(new $className());
+                $publicFields = get_class_methods(new $className());
+                $blankClass = new $className();
+                $objectVars = [];
+
+                foreach ($publicFields as $field) {
+                    if (substr($field, 0, 3) === 'get') {
+                        $type = new \ReflectionMethod($blankClass::class, $field);
+                        $field = strtolower(str_replace('get', '', $field));
+                        $objectVars[$field] = (string) $type->getReturnType();
+                    }
+                }
+                $entityList[strtolower(str_replace('App\\Entity\\', '', $className))] = $objectVars;
             }
         }
 
@@ -64,12 +80,10 @@ class DatabaseController implements ControllerInterface {
             $_sql = 'CREATE TABLE ' . $entityName. '(';
 
             foreach ($entityValue as $column => $dataType) {
-                if ($dataType === []) {
-
-                } else if (gettype($dataType) === 'DateTime') {
-                    $_sql .= $column . ' ' . 'DATETIME,';
-                }else {
-                    $_sql .= $column . ' ' . gettype($dataType) . ',';
+                if (array_key_exists($dataType, $this->mapping)) {
+                    $_sql .= $column . ' ' . $this->mapping[$dataType] . ',';
+                } else if($dataType !== 'array') {
+                    throw new \Exception(sprintf('Key %s not found in database mapping!', $dataType));
                 }
             }
             $_sql = substr($_sql, 0, -1);
@@ -85,13 +99,12 @@ class DatabaseController implements ControllerInterface {
 
             foreach ($entityValue['new'] as $column => $dataType) {
                 $_sql = 'ALTER TABLE ' . $entityName. ' ADD ';
-                if ($dataType === []) {
-
-                } else if (get_class($dataType) === 'DateTime') {
-                    $_sql .= $column . ' ' . 'DATETIME,';
-                }else {
-                    $_sql .= $column . ' ' . gettype($dataType) . ',';
+                if (array_key_exists($dataType, $this->mapping)) {
+                    $_sql .= $column . ' ' . $this->mapping[$dataType] . ',';
+                } else if($dataType !== 'array') {
+                    throw new \Exception(sprintf('Key %s not found in database mapping!', $dataType));
                 }
+
                 $_sql = substr($_sql, 0, -1);
                 $_sql .= ';';
                 $_sql = str_replace('string', 'varchar(512)', $_sql);

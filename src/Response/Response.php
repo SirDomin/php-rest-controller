@@ -22,7 +22,7 @@ class Response
         die(json_encode($this->data, JSON_UNESCAPED_SLASHES));
     }
 
-    public static function JsonResponse($data, $code = 202): self
+    public static function JsonResponse($data, $code = 200): self
     {
         return new self('Content-Type: application/json;', $data, $code);
     }

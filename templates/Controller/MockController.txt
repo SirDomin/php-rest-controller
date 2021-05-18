@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Controller;
+
+use App\Response\Response;
+
+class {{CLASS_NAME}} implements ControllerInterface
+{
+    function __construct()
+    {
+
+    }
+
+    function init(): Response
+    {
+        return Response::JsonResponse(
+            [
+                {{ENDPOINT_NAME}}
+            ]
+        );
+    }
+}

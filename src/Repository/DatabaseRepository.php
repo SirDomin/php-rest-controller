@@ -17,7 +17,11 @@ class DatabaseRepository {
     private $connection = '';
 
     function __construct() {
-        $this->connection = mysqli_connect($this->databaseHost, $this->databaseUserName, $this->databasePassword, $this->databaseName) or die("Database failed to respond.");
+        $this->connection = @mysqli_connect($this->databaseHost, $this->databaseUserName, $this->databasePassword, $this->databaseName);
+
+        if ($this->connection === false) {
+            throw new \Exception('Couldnt connect to database');
+        }
 
         mysqli_set_charset($this->connection, "utf8");
     }
@@ -50,14 +54,18 @@ class DatabaseRepository {
 
         $object = new $objectClass();
 
-        foreach (get_object_vars($object) as $key => $val) {
-            if(is_array($object->$key)) {
-                $object->$key = $this->getListDataMultiCondition(substr($key, 0, -1), [$tableName . 'Id' => (string) $object->id]);
-            } else if(is_object($object->$key) && get_class($object->$key) === 'DateTime') {
-                $object->$key = new \DateTime($result[$key]);
-            }else {
-                $object->$key = $result[$key];
+        /** @var \ReflectionProperty $key */
+        foreach ($object->propertiesDocs() as $key) {
+
+            $method = sprintf('set%s', ucfirst($key->getName()));
+
+            if((string) $key->getType() === 'array') {
+                $data = $this->getListDataMultiCondition(substr($key->getName(), 0, -1), [$object->table() . 'Id' => (string) $object->getId()]);
+            } else {
+                $data = $result[strtolower($key->getName())] ?? null;
             }
+
+            $object->setValue($method, (string) $key->getType(), $data);
         }
 
         return $object;
@@ -218,10 +226,4 @@ class DatabaseRepository {
 
         return $feedback;
     }
-
-    function _stringtodb($strParamString)
-    {
-        return addslashes($strParamString);
-    }
-
 }

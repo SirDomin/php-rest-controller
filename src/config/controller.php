@@ -22,4 +22,27 @@ return [
             'App\Router'
         ]
     ],
+    'App\Controller\LoginController' => [
+        'services' => [
+            'App\Request\Request',
+            'App\Router',
+            'App\Repository\UserRepository'
+        ]
+    ],
+    'App\Controller\RegisterController' => [
+        'services' => [
+            'App\Request\Request',
+            'App\Router',
+            'App\Repository\EntityRepository'
+        ]
+    ],
+    'App\Controller\PromoteController' => [
+        'services' => [
+            'App\Request\Request',
+            'App\Repository\UserRepository'
+        ]
+    ],
+    'App\Controller\TestController' => [
+        'services' => []
+    ]
 ];

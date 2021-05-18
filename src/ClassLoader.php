@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Generator\Generator;
 use App\Parser\XmlParser;
 
 final class ClassLoader
@@ -45,9 +46,15 @@ final class ClassLoader
                 $classArguments[] = $this->load($classToLoad);
             }
 
-            $this->classesLoaded[$className] = new $className(...$classArguments);
+            try {
+                $this->classesLoaded[$className] = new $className(...$classArguments);
+            } catch(\Error $error) {
+                Generator::generateMockController($className);
+//                throw new \Exception(sprintf('Service with name %s does not exist, did you forget to create one?', $className));
+            }
         } else {
-            throw new \Exception(sprintf('Service with name %s not found in src/config/config.php', $className), 500);
+            Generator::generateMockController($className);
+//            throw new \Exception(sprintf('Service with name %s not found in src/config/config.php', $className), 500);
         }
 
         return $this->classesLoaded[$className];

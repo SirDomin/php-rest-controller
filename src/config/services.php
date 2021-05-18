@@ -4,29 +4,24 @@ return [
     'App\Repository\DatabaseRepository' => [
         'services' => []
     ],
-    'App\Repository\GameRepository' => [
-        'services' => [
-        ]
-    ],
-    'App\Repository\PlayerRepository' => [
-        'services' => []
-    ],
     'App\Request\Request' => [
         'services' => []
     ],
-    'App\Resolver\GameResolver' => [
+    'App\Router' => [
         'services' => [
-            'App\Repository\GameRepository',
-            'App\Repository\PlayerRepository',
-            'App\Repository\SummonerRepository',
-            'App\Router',
+            'App\Request\Request',
         ]
     ],
-    'App\Repository\SummonerRepository' => [
+    'App\Repository\EntityRepository' => [
         'services' => []
-
     ],
-    'App\Router' => [
-        'services' => ['App\Request\Request']
+    'App\Repository\UserRepository' => [
+        'services' => []
+    ],
+    'App\Manager\SecurityManager' => [
+        'services' => [
+            'App\Repository\UserRepository',
+            'App\Request\Request',
+        ]
     ],
 ];

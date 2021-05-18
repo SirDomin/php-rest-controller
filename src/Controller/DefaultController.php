@@ -8,7 +8,8 @@ use App\Request\Request;
 use App\Response\Response;
 use App\Router;
 
-class DefaultController implements ControllerInterface {
+class DefaultController implements ControllerInterface
+{
 
     private Request $request;
 

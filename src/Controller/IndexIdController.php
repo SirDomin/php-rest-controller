@@ -9,7 +9,7 @@ use App\Response\Response;
 
 class IndexIdController implements ControllerInterface {
 
-    private $request;
+    private Request $request;
 
     function __construct(Request $request)
     {

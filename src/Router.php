@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App;
 
 use App\Controller\ControllerInterface;
+use App\Manager\SecurityManager;
 use App\Request\Request;
 
 final class Router
@@ -15,11 +16,14 @@ final class Router
 
     private $classLoader;
 
-    public function __construct(Request $request, ClassLoader $classLoader)
+    private SecurityManager $securityManager;
+
+    public function __construct(Request $request, ClassLoader $classLoader, SecurityManager $securityManager)
     {
         $this->request = $request;
         $this->classLoader = $classLoader;
         $this->routes = yaml_parse_file('src/config/routes.yaml')['routes'];
+        $this->securityManager = $securityManager;
     }
 
     public function getRoutes(): array
@@ -58,6 +62,9 @@ final class Router
 
             if ($url === $requestUrl) {
                 if (in_array($this->request->method(), $route['methods'])) {
+                    if(isset($route['allow']) && !in_array('guest', $route['allow'])) {
+                        $this->securityManager->authorize($route['allow']);
+                    }
                     return $this->classLoader->load($route['controller']);
                 }
             }
