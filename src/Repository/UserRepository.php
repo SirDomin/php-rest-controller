@@ -2,8 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\User;
-
 class UserRepository extends EntityRepository
 {
     private string $tableName = 'user';

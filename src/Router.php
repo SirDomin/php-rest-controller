@@ -48,6 +48,11 @@ final class Router
             $url = explode('/', $route['url']);
             $requestUrl = explode('/', $this->request->url());
 
+//            dd([
+//                'loaded' => $this->serviceLoader->getServicesLoaded(),
+//                'needed' => $this->serviceLoader->getNeededServices()
+//            ]);
+
             for ($x = 0; $x < sizeof($url); $x++) {
                 if (isset($requestUrl[$x]) && str_contains($url[$x], '{') && $url[$x] !== $requestUrl[$x]) {
                     $variable = str_replace('{', '', $url[$x]);

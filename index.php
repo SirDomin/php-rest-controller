@@ -14,20 +14,21 @@ function dd(...$data){
     die(json_encode($data));
 }
 
-set_exception_handler(function($exception) {
-    Response::JsonResponse(
-        [
-            'message' => $exception->getMessage(),
-            'code' => $exception->getCode()
-        ],
-        $exception->getCode()
-    )->response();
-});
+//set_exception_handler(function($exception) {
+//    Response::JsonResponse(
+//        [
+//            'message' => $exception->getMessage(),
+//            'code' => $exception->getCode()
+//        ],
+//        $exception->getCode()
+//    )->response();
+//});
 
 date_default_timezone_set('Europe/Warsaw');
 
-$serviceLoader = new ServiceLoader();
-$serviceLoader->load();
+//$serviceLoader = new ServiceLoader();
+//$serviceLoader->load();
+
 $classLoader = new ClassLoader();
 
 $router = new Router($classLoader->load('App\Request\Request'), $classLoader, $classLoader->load('App\Manager\SecurityManager'));
