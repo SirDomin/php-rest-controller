@@ -34,5 +34,6 @@ $router = new Router($classLoader->load('App\Request\Request'), $classLoader, $c
 $classLoader->addObject($router);
 
 $controller = $router->resolve();
-$controller->init()->response();
+
+$controller['controller']->{$controller['method']}()->response();
 

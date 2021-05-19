@@ -13,7 +13,7 @@ class UserRepository extends EntityRepository
         parent::__construct();
     }
 
-    public function findOneBy($field, $value): object
+    public function findOneBy($field, $value): ?object
     {
         return parent::getRecordData($this->tableName, $value, $field);
     }

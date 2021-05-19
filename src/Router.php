@@ -42,7 +42,7 @@ final class Router
         return null;
     }
 
-    public function resolve(): ControllerInterface
+    public function resolve(): array
     {
         foreach ($this->routes as $route) {
             $url = explode('/', $route['url']);
@@ -65,7 +65,13 @@ final class Router
                     if(isset($route['allow']) && !in_array('guest', $route['allow'])) {
                         $this->securityManager->authorize($route['allow']);
                     }
-                    return $this->classLoader->load($route['controller']);
+
+                    $controllerData = explode('::',$route['controller']);
+
+                    return [
+                        'controller' => $this->classLoader->load($controllerData[0]),
+                        'method' => $controllerData[1] ?? 'init'
+                    ];
                 }
             }
 

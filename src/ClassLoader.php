@@ -49,12 +49,13 @@ final class ClassLoader
             try {
                 $this->classesLoaded[$className] = new $className(...$classArguments);
             } catch(\Error $error) {
+                // generate controller if doesnt exist
                 Generator::generateMockController($className);
-//                throw new \Exception(sprintf('Service with name %s does not exist, did you forget to create one?', $className));
+                $this->classesLoaded[$className] = new $className();
             }
         } else {
             Generator::generateMockController($className);
-//            throw new \Exception(sprintf('Service with name %s not found in src/config/config.php', $className), 500);
+            $this->classesLoaded[$className] = new $className();
         }
 
         return $this->classesLoaded[$className];

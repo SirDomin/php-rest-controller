@@ -35,8 +35,8 @@ routes:
         methods: [ GET ]
         allow: [ admin ]
 
-    test:
-        url: /test
-        controller: App\Controller\TestController
+    find_user_by_id:
+        url: /users/{id}
+        controller: App\Controller\UserController::findUserById
         methods: [ GET ]
         allow: [ admin ]

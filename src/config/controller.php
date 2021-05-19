@@ -42,7 +42,10 @@ return [
             'App\Repository\UserRepository'
         ]
     ],
-    'App\Controller\TestController' => [
-        'services' => []
+    'App\Controller\UserController' => [
+        'services' => [
+            'App\Request\Request',
+            'App\Repository\UserRepository'
+        ]
     ]
 ];
