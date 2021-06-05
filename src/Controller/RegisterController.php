@@ -2,15 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\Summoner;
 use App\Entity\User;
 use App\Repository\EntityRepository;
-use App\Repository\SummonerRepository;
-use App\Repository\UserRepository;
 use App\Request\Request;
 use App\Response\Response;
 use App\Router;
-use Cassandra\Uuid;
 
 class RegisterController implements ControllerInterface
 {

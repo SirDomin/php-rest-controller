@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use ReflectionClass;
 
 class Entity
 {
@@ -21,12 +20,12 @@ class Entity
 
     public function properties(): array
     {
-        $reflection = new ReflectionClass(get_class($this));
+        $reflection = new \ReflectionClass(get_class($this));
 
         $properties = array_keys($reflection->getDefaultProperties());
 
         while ($parentClass = $reflection->getParentClass()) {
-            $reflection = new ReflectionClass($parentClass->getName());
+            $reflection = new \ReflectionClass($parentClass->getName());
 
             $properties = array_merge($properties, array_keys($reflection->getDefaultProperties()));
         }
@@ -36,12 +35,12 @@ class Entity
 
     public function propertiesDocs(): array
     {
-        $reflection = new ReflectionClass(get_class($this));
+        $reflection = new \ReflectionClass(get_class($this));
 
         $properties = $reflection->getProperties();
 
         while ($parentClass = $reflection->getParentClass()) {
-            $reflection = new ReflectionClass($parentClass->getName());
+            $reflection = new \ReflectionClass($parentClass->getName());
 
             $properties = array_merge($properties, $reflection->getProperties());
         }
