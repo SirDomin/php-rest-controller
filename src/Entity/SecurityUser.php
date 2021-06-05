@@ -15,6 +15,11 @@ class SecurityUser extends Entity
     private string $role = 'user';
 
     /**
+     * @unique
+     */
+    private string $login = '';
+
+    /**
      * @return string
      */
     public function getRole(): string
@@ -45,11 +50,6 @@ class SecurityUser extends Entity
     {
         $this->lastLogin = $lastLogin;
     }
-
-    /**
-     * @unique
-     */
-    private string $login = '';
 
     /**
      * @return string

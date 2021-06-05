@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Summoner;
-use App\Repository\SummonerRepository;
 use App\Request\Request;
 use App\Response\Response;
 

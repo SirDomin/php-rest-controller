@@ -87,12 +87,21 @@ final class ClassLoader
 
                 $this->loadFile(str_replace($class, $classToLoad[0], $className));
             }
+
+            if(class_exists($className)) {
+                $this->classesLoaded[] = $className;
+                return true;
+            }
+
             try {
+                if(!file_exists($fileName)){
+                    return false;
+                }
+
                 include($fileName);
                 $this->filesLoaded[$fileName] = true;
                 return true;
             } catch (\Error $error) {
-
                 if(str_contains($file, 'extends')) {
                     $classToLoad = explode('extends ', $file);
                     $classToLoad = explode("\r", $classToLoad[1]);
@@ -103,8 +112,6 @@ final class ClassLoader
                     if (!$this->loadFile(str_replace($class, $classToLoad[0], $className), $previousClassName)) {
                         $this->loadFile(str_replace($class, $classToLoad[0], $className), $previousClassName);
                     };
-                } else {
-
                 }
 
                 return false;

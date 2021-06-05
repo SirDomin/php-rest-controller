@@ -37,13 +37,8 @@ class SecurityManager
 
         $authorizationToken = str_replace('Bearer: ', '', $authorizationToken);
 
-//        try {
             /** @var User $user */
             $user = $this->userRepository->findOneBy('token', $authorizationToken);
-//        }catch(\Error $exception) {
-//            dd($exception->getMessage());
-//            throw new \Exception('unauthorized', 401);
-//        }
 
         assert(in_array($user->getRole(), $allow), new \Exception('unauthorized', 401));
 

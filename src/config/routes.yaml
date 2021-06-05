@@ -39,4 +39,22 @@ routes:
         url: /users/{id}
         controller: App\Controller\UserController::findUserById
         methods: [ GET ]
+        allow: [ guest ]
+
+    testing:
+        url: /test
+        controller: App\Controller\TestController::get
+        methods: [ GET ]
+        allow: [ guest ]
+
+    testing_admin:
+        url: /test
+        controller: App\Controller\TestController::getAdmin
+        methods: [ GET ]
         allow: [ admin ]
+
+    testing2:
+        url: /test
+        controller: App\Controller\TestController::post
+        methods: [ POST ]
+        allow: [ guest ]

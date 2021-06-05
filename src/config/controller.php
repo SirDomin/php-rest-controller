@@ -47,5 +47,11 @@ return [
             'App\Request\Request',
             'App\Repository\UserRepository'
         ]
+    ],
+    'App\Controller\TestController' => [
+        'services' => [
+            'App\Request\Request',
+            'App\Repository\UserRepository'
+        ]
     ]
 ];
