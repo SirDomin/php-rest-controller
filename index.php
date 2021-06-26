@@ -10,7 +10,13 @@ use App\ServiceLoader;
 use App\Router;
 use App\ClassLoader;
 
+$debug = true;
+
 set_exception_handler(function($exception) {
+    GLOBAL $debug;
+    if ($debug === true) {
+        throw $exception;
+    }
     Response::JsonResponse(
         [
             'message' => $exception->getMessage(),
