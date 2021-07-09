@@ -34,12 +34,12 @@ class DatabaseController implements ControllerInterface {
 
         $this->cache = $entityList;
 
-        $this->saveCache();
+//        $this->saveCache();
 
         $sql = $this->generateSQL($entityClasses);
 
         if($sql !== "") {
-            $this->databaseRepository->customQuery($sql);
+//            $this->databaseRepository->customQuery($sql);
         }
 
         return Response::JsonResponse([
@@ -79,9 +79,12 @@ class DatabaseController implements ControllerInterface {
         foreach($entityChanges['new'] as $entityName => $entityValue) {
             $_sql = 'CREATE TABLE ' . $entityName. '(';
 
+            //TODO NULL VALUES ALLOW
             foreach ($entityValue as $column => $dataType) {
+                $nullable = str_contains($dataType, '?');
+                $dataType = str_replace('?', '', $dataType);
                 if (array_key_exists($dataType, $this->mapping)) {
-                    $_sql .= $column . ' ' . $this->mapping[$dataType] . ',';
+                    $_sql .= $column . ' ' . $this->mapping[$dataType] . ($nullable ? '' : ' NOT NULL') .',';
                 } else if($dataType !== 'array') {
                     throw new \Exception(sprintf('Key %s not found in database mapping!', $dataType));
                 }

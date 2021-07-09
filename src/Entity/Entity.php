@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-
 class Entity
 {
     private function serialize(): array

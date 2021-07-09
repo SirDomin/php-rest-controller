@@ -75,9 +75,14 @@ final class ClassLoader
         $className = str_replace('.php', '', $className);
         $className = str_replace(' ', '', $className);
         $fileName = str_replace('App', 'src', implode('/', $classExploded)). '.php';
+        $fileName = str_replace(' {', '', $fileName);
+
 
         if (!array_key_exists($fileName, $this->filesLoaded)) {
-            $file = file_get_contents($fileName) ?? '';
+            $file = '';
+            if(file_exists($fileName)){
+                $file = file_get_contents($fileName);
+            }
             if (str_contains($file, 'use ')) {
                 $this->getUse($file);
             }
@@ -102,6 +107,7 @@ final class ClassLoader
                 $this->filesLoaded[$fileName] = true;
                 return true;
             } catch (\Error $error) {
+
                 if(str_contains($file, 'extends')) {
                     $classToLoad = explode('extends ', $file);
                     $classToLoad = explode("\r", $classToLoad[1]);
@@ -113,11 +119,10 @@ final class ClassLoader
                         $this->loadFile(str_replace($class, $classToLoad[0], $className), $previousClassName);
                     };
                 }
-
                 return false;
             }
         }
-        return false;
+        return true;
     }
 
     private function getUse(string $file)
@@ -140,12 +145,48 @@ final class ClassLoader
         }
     }
 
+    //TODO generator for namespaces
     private function loadEntities()
     {
+        $loads = [];
         foreach (glob("src/Entity/*.php") as $filename)
         {
-            $this->filesLoaded[$filename] = true;
-            include $filename;
+
+            $this->loadFile($this->getFullClassName($filename));
+            $loads[] = $this->getFullClassName($filename);
+////            $className =
+//            $className = str_replace('.php', '', $className);
+//            $className = str_replace(' ', '', $className);
+//            $fileName = str_replace('App', 'src', implode('/', $filename)). '.php';
+//            $this->filesLoaded[$filename] = true;
+//            include $filename;
         }
+
+//        dd($this->filesLoaded);
+//        dd(glob("src/Entity/*.php"));
+//        dd(get_declared_classes());
+        dd($loads);
+    }
+
+    private function getFullClassName(string $fileName): string
+    {
+        $fileContents = file_get_contents($fileName);
+
+        $tokens = token_get_all($fileContents);
+
+        $namespace = 'GLOBAL';
+        foreach ($tokens as $token) {
+            if (!is_string($token)) {
+                list($id, $text) = $token;
+                if ($id == T_NAME_QUALIFIED) {
+                    $namespace = $text;
+                }
+                if ($id == T_STRING) {
+                    return $namespace.'\\'.$text;
+                }
+            }
+        }
+
+        return '';
     }
 }
